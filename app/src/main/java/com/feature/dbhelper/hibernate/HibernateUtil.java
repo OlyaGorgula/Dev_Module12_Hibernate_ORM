@@ -2,6 +2,7 @@ package com.feature.dbhelper.hibernate;
 
 import com.feature.entity.Client;
 import com.feature.entity.Planet;
+import com.feature.entity.Ticket;
 import lombok.Getter;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -21,6 +22,7 @@ public class HibernateUtil {
         sessionFactory = new Configuration()
                 .addAnnotatedClass(Client.class)
                 .addAnnotatedClass(Planet.class)
+                .addAnnotatedClass(Ticket.class)
                 .buildSessionFactory();
     }
 

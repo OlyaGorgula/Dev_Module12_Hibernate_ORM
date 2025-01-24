@@ -10,7 +10,7 @@ INSERT INTO client (name) VALUES
 ('Avatar Ava'),
 ('Bodya Toshka');
 
-INSERT INTO planet (id, name) VALUES
+INSERT INTO planet (planet_id, name) VALUES
 ('MARS', 'Mars'),
 ('VENERA', 'Venera'),
 ('JUPITER', 'Jupiter'),

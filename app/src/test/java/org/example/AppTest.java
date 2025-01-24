@@ -4,8 +4,8 @@ package org.example;
 import com.feature.dbhelper.DatabaseInitService;
 import com.feature.dbhelper.crud.ClientCrudService;
 import com.feature.dbhelper.crud.PlanetCrudService;
-import com.feature.entity.Client;
-import com.feature.entity.Planet;
+import com.feature.dbhelper.crud.TicketCrudService;
+import com.feature.entity.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,11 +15,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 class AppTest {
     private Connection connection;
     private ClientCrudService crudClient;
     private PlanetCrudService crudPlanet;
+    private TicketCrudService crudTicket;
 
     @BeforeEach
     public void beforeEach() throws SQLException {
@@ -32,6 +32,7 @@ class AppTest {
 
         crudClient = new ClientCrudService();
         crudPlanet = new PlanetCrudService();
+        crudTicket = new TicketCrudService();
     }
     @AfterEach
     public void afterEach() throws SQLException {
@@ -75,7 +76,7 @@ class AppTest {
         Assertions.assertNull(crudClient.getById(id));
     }
 
-    //********************************************************
+    //********************** Planet  **********************************
 
     @Test void testWritePlanet() {
         Planet newPlanet = new Planet();
@@ -138,5 +139,106 @@ class AppTest {
         crudPlanet.deleteById(id);
 
         Assertions.assertNull(crudPlanet.getById(id));
+    }
+
+    //******************* Ticket *****************************
+
+    @Test void testWriteTicket() {
+
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(crudClient.getById(1L));
+        newTicket.setFromPlanet(crudPlanet.getById("MARS"));
+        newTicket.setToPlanet(crudPlanet.getById("VENERA"));
+
+        long id = crudTicket.create(newTicket);
+
+        Ticket saved = crudTicket.getById(id);
+
+        //Assert
+        Assertions.assertEquals(newTicket.getId(), saved.getId());
+        Assertions.assertEquals(newTicket.getCreatedAt(), saved.getCreatedAt());
+        Assertions.assertEquals(newTicket.getFromPlanet().getId(), saved.getFromPlanet().getId());
+        Assertions.assertEquals(newTicket.getToPlanet().getId(), saved.getToPlanet().getId());
+    }
+
+    @Test public void testUpdateTicket(){
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(crudClient.getById(1L));
+        newTicket.setFromPlanet(crudPlanet.getById("MARS"));
+        newTicket.setToPlanet(crudPlanet.getById("VENERA"));
+
+        long id = crudTicket.create(newTicket);
+        newTicket.setId(id);
+
+        crudClient.getById(1L);
+
+        //Update
+        newTicket.setClient(crudClient.getById(2L));
+        newTicket.setFromPlanet(crudPlanet.getById("MERCURY"));
+        newTicket.setToPlanet(crudPlanet.getById("MARS"));
+        crudTicket.update(id, newTicket);
+
+        Ticket updateTicket = crudTicket.getById(id);
+
+        Assertions.assertEquals(crudPlanet.getById("MERCURY").getId(), updateTicket.getFromPlanet().getId());
+        Assertions.assertEquals(crudPlanet.getById("MARS").getId(), updateTicket.getToPlanet().getId());
+        Assertions.assertEquals(crudClient.getById(2L).getId(), updateTicket.getClient().getId());
+    }
+
+    @Test void testDeleteTicket() {
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(crudClient.getById(1L));
+        newTicket.setFromPlanet(crudPlanet.getById("MARS"));
+        newTicket.setToPlanet(crudPlanet.getById("VENERA"));
+
+        long id = crudTicket.create(newTicket);
+        crudTicket.deleteById(id);
+
+        Assertions.assertNull(crudTicket.getById(id));
+    }
+
+    @Test void testWriteTicketNullClient() {
+
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(null);
+        newTicket.setFromPlanet(crudPlanet.getById("MARS"));
+        newTicket.setToPlanet(crudPlanet.getById("VENERA"));
+
+        long id = crudTicket.create(newTicket);
+
+        //Assert
+        Assertions.assertEquals(-1, id);
+    }
+
+    @Test void testWriteTicketNullFromPlanet() {
+
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(crudClient.getById(1L));
+        newTicket.setFromPlanet(null);
+        newTicket.setToPlanet(crudPlanet.getById("VENERA"));
+
+        long id = crudTicket.create(newTicket);
+
+        //Assert
+        Assertions.assertEquals(-1, id);
+    }
+
+    @Test void testWriteTicketNullToPlanet() {
+
+        Ticket newTicket = new Ticket();
+        newTicket.setCreatedAt(crudTicket.getTime());
+        newTicket.setClient(crudClient.getById(1L));
+        newTicket.setFromPlanet(crudPlanet.getById("MARS"));
+        newTicket.setToPlanet(crudPlanet.getById("VENERAAAAA"));
+
+        long id = crudTicket.create(newTicket);
+
+        //Assert
+        Assertions.assertEquals(-1, id);
     }
 }

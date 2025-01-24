@@ -2,6 +2,7 @@ package com.feature.dbhelper.crud;
 
 import com.feature.dbhelper.hibernate.HibernateUtil;
 import com.feature.entity.Client;
+import com.feature.entity.Ticket;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
@@ -23,8 +24,15 @@ public class ClientCrudService {
     }
 
     public Client getById(long id){
+        return getById(id, false);
+    }
+
+    public Client getById(long id, boolean printTickets){
         Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
         Client client = session.get(Client.class, id);
+        if (printTickets){
+            for (Ticket ticket : client.getTickets());
+        }
         session.close();
         return client;
     }
