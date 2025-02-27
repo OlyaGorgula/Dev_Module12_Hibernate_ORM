@@ -44,7 +44,7 @@ class AppTest {
         Client newClient = new Client();
         newClient.setName("Client1");
 
-        long id = crudClient.create(newClient);
+        long id = crudClient.create(newClient);//
         Client saved = crudClient.getById(id);
 
         //Assert
