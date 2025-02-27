@@ -48,7 +48,7 @@ class AppTest {
         Client saved = crudClient.getById(id);
 
         //Assert
-        Assertions.assertEquals(2, saved.getId());
+        Assertions.assertEquals(id, saved.getId());
         Assertions.assertEquals(newClient.getName(), saved.getName());
     }
 
